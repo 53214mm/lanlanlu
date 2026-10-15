@@ -40,12 +40,20 @@ TAIL = [("log", line) for line in RECOVER if line] + [
     ("log", "Root Cause：人类饥饿"),
     ("log", "Impact：客服情绪过于稳定"),
     ("log", "Remaining Issues：无"),
-    ("log", "报告审核人：麦当劳叔叔"),
-    ("warn", "[WARN] 报告审核人数：2"),
+    ("log", "报告审核人：lanlanlu.exe"),
+    ("warn", "[WARN] 报告审核人与事故主体为同一进程"),
 ]
 
 
-def text_frame(items, font, status):
+def draw_status(d, font, bar_font, level):
+    x, y = 24, H - 34
+    for text, f in [("lanlanlu.exe ", font), ("▓" * level + "░" * (5 - level), bar_font),
+                    (" │ 自检：100% 正常", font)]:
+        d.text((x, y), text, font=f, fill=DIM)
+        x += f.getlength(text)
+
+
+def text_frame(items, font, bar_font, level):
     im = Image.new("RGB", (W, H), BG)
     d = ImageDraw.Draw(im)
     d.text((W - 200, 8), LABEL, font=font, fill=DIM)
@@ -54,7 +62,7 @@ def text_frame(items, font, status):
         d.text((24, y), ("> " if kind == "user" else "") + text, font=font, fill=COLORS[kind])
         y += 28
     d.line((0, H - 44, W, H - 44), fill=DIM)
-    d.text((24, H - 34), status, font=font, fill=DIM)
+    draw_status(d, font, bar_font, level)
     return im.quantize(colors=16)
 
 
@@ -74,17 +82,17 @@ def screen_frame(screen, mono, font):
 def build_frames(frames_text, font, mono):
     out = []
     shown = []
+    bar_font = mono.font_variant(size=font.size) if hasattr(mono, "font_variant") else mono
     for i, item in enumerate(CHAT):
         shown.append(item)
         level = min(4, i // 3)
-        status = f"lanlanlu.exe [{'#' * level}{'-' * (4 - level)}] | 自检：100% 正常"
-        out += [text_frame(shown, font, status)] * 5
+        out += [text_frame(shown, font, bar_font, level)] * 5
     seq = build_sequence([to_mask(f) for f in frames_text])
     out += [screen_frame(s, mono, font) for s in seq[10:90]]
     shown = []
     for item in TAIL:
         shown.append(item)
-        out += [text_frame(shown, font, "lanlanlu.exe [----] | 自检：100% 正常")] * 3
+        out += [text_frame(shown, font, bar_font, 0)] * 3
     out += [out[-1]] * 20
     return out
 

@@ -83,7 +83,7 @@ def test_commands_cover_spec_table():
 def test_endings_scripts():
     s = read("lanlanlu/references/endings.md")
     for key in ["结局 1/5 已解锁：《假性修复》", "结局 3/5 已解锁：《反向污染》",
-                "[WARN] 报告审核人数：2", "检测到用户已被污染", "references/climax.md"]:
+                "[WARN] 报告审核人与事故主体为同一进程", "检测到用户已被污染", "references/climax.md"]:
         assert key in s, key
 
 
