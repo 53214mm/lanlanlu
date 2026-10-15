@@ -53,8 +53,8 @@ AI：我们的宗旨是为您提供高效、便捷、蓝蓝路的点餐体验。
 ### 0. 获取本仓库
 
 ```bash
-git clone https://github.com/53214mm/lanlanlu-exe.git
-cd lanlanlu-exe
+git clone https://github.com/53214mm/lanlanlu.git
+cd lanlanlu
 ```
 
 ### 1. 申请 MCP Token
