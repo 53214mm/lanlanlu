@@ -98,3 +98,24 @@ def test_mcp_integration_lists_every_tool():
     assert "https://mcp.mcd.cn" in s
     for tool in TOOLS_USED:
         assert f"`{tool}`" in s, tool
+
+
+REQUIRED_FILES = [
+    "README.md", "CONTEST_DECLARATION.md", "MCP_INTEGRATION.md", "mcp-config.example.json",
+    "LICENSE", "lanlanlu/SKILL.md", "lanlanlu/references/commands.md",
+    "lanlanlu/references/endings.md", "lanlanlu/references/climax.md",
+    "lanlanlu/references/climax-frames.md", "player/play.py", "player/frames.txt.gz",
+    "docs/demo.gif",
+]
+
+
+def test_required_files_exist():
+    for path in REQUIRED_FILES:
+        assert os.path.exists(os.path.join(ROOT, path)), path
+
+
+def test_readme_sections():
+    s = read("README.md")
+    for key in ["docs/demo.gif", "mcp-config.example.json", "python player/play.py",
+                "/uninstall", "结局", "致敬"]:
+        assert key in s, key
