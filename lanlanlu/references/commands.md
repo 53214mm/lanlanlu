@@ -6,10 +6,10 @@
 |---|---|---|
 | `ps` 或 `top` | 见下方"进程表" | +1 |
 | `kill -9 lanlanlu.exe` | `进程已终止。` 下一行 `[INFO] lanlanlu.exe 已自动重启（PID 1024）` | +1 |
-| `sudo 正常` | `你不在 sudoers 文件中。此事将被报告给：[数据删除]` | +1 |
+| `sudo 正常` | `你不在 sudoers 文件中。此事将被报告给：快乐管理员` | +1 |
 | `ping lanlanlu` | `64 bytes from 蓝蓝路: time=0ms`，然后一句"它一直就在本机。" | +1 |
-| `git blame` | `该行最后修改于 2004 年，作者：叔叔` | 不变 |
-| `--version` | `lanlanlu.exe v2004.0.0 (最终鬼畜 build)` | 不变 |
+| `git blame` | `该行最后修改于 2004 年，作者：lanlanlu.exe` | 不变 |
+| `--version` | `lanlanlu.exe v2004.0.0 (ランランルー build)` | 不变 |
 | `help` | 见下方"帮助" | 不变 |
 | `↑↑↓↓←→←→BA` 或 `上上下下左右左右BA` | 见下方"开发者模式" | 不变 |
 | `/uninstall` | 见下方"卸载" | 退出 |

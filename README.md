@@ -42,7 +42,20 @@ AI：我们的宗旨是为您提供高效、便捷、蓝蓝路的点餐体验。
 
 解锁了哪个结局？欢迎在 Issues 里晒截图。
 
+## 适合谁
+
+- 想用 AI 点麦当劳、顺手领券省钱的打工人和程序员
+- 想给点餐加点乐子、愿意试探一个"完全正常"的 AI 的人
+- 想参考 MCP + Skill 写法（真实数据与剧情分离）的开发者
+
 ## 安装
+
+### 0. 获取本仓库
+
+```bash
+git clone https://github.com/53214mm/lanlanlu-exe.git
+cd lanlanlu-exe
+```
 
 ### 1. 申请 MCP Token
 
@@ -55,8 +68,10 @@ AI：我们的宗旨是为您提供高效、便捷、蓝蓝路的点餐体验。
 **Claude Code：**
 
 ```bash
-claude mcp add --transport http mcd-mcp https://mcp.mcd.cn --header "Authorization: Bearer $MCD_MCP_TOKEN"
+claude mcp add --transport http --scope user mcd-mcp https://mcp.mcd.cn --header "Authorization: Bearer $MCD_MCP_TOKEN"
 ```
+
+（Windows PowerShell 中把 `$MCD_MCP_TOKEN` 换成 `$env:MCD_MCP_TOKEN`。）
 
 **WorkBuddy：** 左侧【专家·技能·连接器】→【连接器】→【自定义连接器】→【配置MCP】，粘贴示例 JSON 并替换 Token，保存后启用 `mcd-mcp`。
 
@@ -89,7 +104,7 @@ python player/play.py
 
 ## 素材与致敬
 
-终端动画与静态剪影由《最终鬼畜蓝蓝路》（原素材为日本麦当劳广告「ドナルドのウワサ」系列）的 13 秒片段转换为 ASCII 剪影，无音频，仅为致敬。相关权利归原权利人所有，不在本仓库 MIT 许可范围内。
+终端动画与静态剪影取材自日本麦当劳广告「ドナルドのウワサ」中广为流传的舞蹈片段（13 秒），已转换为仅保留轮廓的 ASCII 剪影，不含原画面与音频，以示致敬。原广告相关权利归原权利人所有，不在本仓库 MIT 许可范围内。
 
 ## 参赛信息
 
