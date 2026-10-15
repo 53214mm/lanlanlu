@@ -14,7 +14,12 @@ LABELS = ["蓝（拍肩）", "蓝（拍胸）", "路（举手）"]
 
 
 def render(mask):
-    return "\n".join("".join("#" if c else " " for c in row).rstrip() for row in mask)
+    rows = ["".join("#" if c else " " for c in row).rstrip() for row in mask]
+    while rows and not rows[0]:
+        rows.pop(0)
+    while rows and not rows[-1]:
+        rows.pop()
+    return "\n".join(rows)
 
 
 def build_markdown(frames, picks, cols):

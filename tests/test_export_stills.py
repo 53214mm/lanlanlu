@@ -11,3 +11,7 @@ def test_build_markdown_has_three_labelled_blocks():
     assert md.count("```") == 6
     for label in es.LABELS:
         assert label in md
+
+
+def test_render_trims_blank_edge_rows():
+    assert es.render([[False, False], [True, False], [False, False]]) == "#"
