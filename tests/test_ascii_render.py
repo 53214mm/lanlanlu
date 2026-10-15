@@ -42,3 +42,18 @@ def test_write_frames_roundtrip(tmp_path):
     ar.write_frames(["a", "b"], str(p))
     with gzip.open(p, "rt", encoding="utf-8") as fh:
         assert fh.read() == "a\fb"
+
+
+def test_write_frames_uses_lf_bytes(tmp_path):
+    p = tmp_path / "f.txt.gz"
+    ar.write_frames(["a\nb", "c"], str(p))
+    with gzip.open(p, "rb") as fh:
+        assert b"\r" not in fh.read()
+
+
+def test_main_exits_clearly_when_no_frames(tmp_path):
+    import pytest
+    with pytest.raises(SystemExit) as exc:
+        ar.main([str(tmp_path / "missing.mp4"), str(tmp_path / "o.txt.gz"),
+                 "--start", "0", "--end", "1"])
+    assert "no frames read" in str(exc.value)

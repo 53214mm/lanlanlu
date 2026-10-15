@@ -7,6 +7,7 @@ Dev-only: needs opencv-python and numpy. The player itself is stdlib-only.
 """
 import argparse
 import gzip
+import sys
 
 import cv2
 import numpy as np
@@ -59,7 +60,7 @@ def extract(src, start, end, fps):
 
 
 def write_frames(frames, path):
-    with gzip.open(path, "wt", encoding="utf-8") as fh:
+    with gzip.open(path, "wt", encoding="utf-8", newline="\n") as fh:
         fh.write("\f".join(frames))
 
 
@@ -75,6 +76,8 @@ def main(argv=None):
     a = ap.parse_args(argv)
     xcrop = tuple(map(int, a.xcrop.split(":"))) if a.xcrop else None
     frames = [crop(f, xcrop) for f in extract(a.src, a.start, a.end, a.fps)]
+    if not frames:
+        sys.exit(f"no frames read from {a.src} in [{a.start}, {a.end})")
     h, w = frames[0].shape[:2]
     rows = int(a.cols * h / w / 2)  # terminal cells are ~2:1
     write_frames([to_silhouette(f, a.cols, rows) for f in frames], a.out)
