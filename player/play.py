@@ -5,6 +5,9 @@ usage: python player/play.py      (press q or Ctrl+C to skip)
 import gzip
 import os
 import random
+import shutil
+import sys
+import time
 
 FPS = 10
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -91,3 +94,76 @@ def build_sequence(masks, seed=7):
     for i, m in enumerate(masks):
         screens.append(masked_screen(m, i * 7, stream))
     return screens
+
+
+def play(screens, write, sleep, should_stop):
+    """Draw screens in place. Always restores the cursor, even on Ctrl+C."""
+    shown = 0
+    write("\x1b[?25l\x1b[2J")
+    try:
+        for screen in screens:
+            if should_stop():
+                break
+            write("\x1b[H" + "\n".join(screen))
+            shown += 1
+            sleep(1 / FPS)
+    finally:
+        write("\x1b[0m\x1b[2J\x1b[H\x1b[?25h")
+    return shown
+
+
+class KeyWatcher:
+    """Non-blocking 'was q pressed?' on Windows and POSIX terminals."""
+
+    def __enter__(self):
+        self._old = None
+        if os.name != "nt" and sys.stdin.isatty():
+            import termios
+            import tty
+            self._old = termios.tcgetattr(sys.stdin)
+            tty.setcbreak(sys.stdin.fileno())
+        return self
+
+    def pressed_q(self):
+        if os.name == "nt":
+            import msvcrt
+            while msvcrt.kbhit():
+                if msvcrt.getwch().lower() == "q":
+                    return True
+            return False
+        if not sys.stdin.isatty():
+            return False
+        import select
+        while select.select([sys.stdin], [], [], 0)[0]:
+            if sys.stdin.read(1).lower() == "q":
+                return True
+        return False
+
+    def __exit__(self, *exc):
+        if self._old is not None:
+            import termios
+            termios.tcsetattr(sys.stdin, termios.TCSADRAIN, self._old)
+        return False
+
+
+def _write(text):
+    sys.stdout.write(text)
+    sys.stdout.flush()
+
+
+def main():
+    if os.name == "nt":
+        os.system("")  # turns on ANSI escape handling in the Windows console
+    size = shutil.get_terminal_size((80, 24))
+    masks = [fit(to_mask(f), size.columns, size.lines - 1) for f in load_frames(FRAMES_PATH)]
+    try:
+        with KeyWatcher() as keys:
+            play(build_sequence(masks), _write, time.sleep, keys.pressed_q)
+    except KeyboardInterrupt:
+        pass
+    print("\n".join(RECOVER))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

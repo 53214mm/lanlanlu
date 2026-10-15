@@ -52,3 +52,26 @@ def test_build_sequence_phases():
     screens = play.build_sequence(masks)
     assert len(screens) == 20 + 20 + 2
     assert all(len(s) == 2 and all(len(line) == 3 for line in s) for s in screens)
+
+
+def test_play_stops_when_asked_and_restores_cursor():
+    out = []
+    answers = iter([False, False, True])
+    shown = play.play([["a"], ["b"], ["c"], ["d"]], out.append, lambda s: None,
+                      lambda: next(answers))
+    assert shown == 2
+    assert out[0].startswith("\x1b[?25l")
+    assert out[-1].endswith("\x1b[?25h")
+
+
+def test_play_restores_cursor_on_interrupt():
+    out = []
+
+    def boom(_):
+        raise KeyboardInterrupt
+
+    try:
+        play.play([["a"], ["b"]], out.append, boom, lambda: False)
+    except KeyboardInterrupt:
+        pass
+    assert out[-1].endswith("\x1b[?25h")
