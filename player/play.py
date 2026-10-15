@@ -68,8 +68,9 @@ def log_screen(offset, rows, cols):
 
 
 def erode_screen(base, mask, order, p):
-    """Figure cells keep their log char; a background cell vanishes once p > its order."""
-    return ["".join(base[r][c] if mask[r][c] or order[r][c] >= p else " "
+    """Figure cells keep their log char (spaces become '#'); a background cell vanishes once p > its order."""
+    return ["".join((base[r][c] if base[r][c] != " " else "#") if mask[r][c]
+                    else base[r][c] if order[r][c] >= p else " "
                     for c in range(len(mask[0])))
             for r in range(len(mask))]
 
@@ -90,7 +91,7 @@ def build_sequence(masks, seed=7):
     base = log_screen(10, rows, cols)
     for i in range(20):
         screens.append(erode_screen(base, masks[0], order, (i + 1) / 20))
-    stream = "  ".join(LOG)
+    stream = "".join(LOG).replace(" ", "")
     for i, m in enumerate(masks):
         screens.append(masked_screen(m, i * 7, stream))
     return screens
@@ -155,7 +156,8 @@ def main():
     if os.name == "nt":
         os.system("")  # turns on ANSI escape handling in the Windows console
     size = shutil.get_terminal_size((80, 24))
-    masks = [fit(to_mask(f), size.columns, size.lines - 1) for f in load_frames(FRAMES_PATH)]
+    cols, rows = max(1, size.columns), max(1, size.lines - 1)
+    masks = [fit(to_mask(f), cols, rows) for f in load_frames(FRAMES_PATH)]
     try:
         with KeyWatcher() as keys:
             play(build_sequence(masks), _write, time.sleep, keys.pressed_q)

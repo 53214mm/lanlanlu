@@ -75,3 +75,14 @@ def test_play_restores_cursor_on_interrupt():
     except KeyboardInterrupt:
         pass
     assert out[-1].endswith("\x1b[?25h")
+
+
+def test_erode_screen_fills_figure_spaces():
+    assert play.erode_screen(["a c"], [[True, True, False]], [[0.5] * 3], 1.0) == ["a# "]
+
+
+def test_build_sequence_figure_is_solid():
+    masks = [play.to_mask("\n".join(["#" * 40] * 5))] * 2
+    screens = play.build_sequence(masks)
+    for s in screens[20:]:
+        assert all(ch != " " for line in s for ch in line)
