@@ -91,3 +91,10 @@ def test_climax_points_to_frames_and_player():
     s = read("lanlanlu/references/climax.md")
     assert "references/climax-frames.md" in s
     assert "python player/play.py" in s
+
+
+def test_mcp_integration_lists_every_tool():
+    s = read("MCP_INTEGRATION.md")
+    assert "https://mcp.mcd.cn" in s
+    for tool in TOOLS_USED:
+        assert f"`{tool}`" in s, tool
