@@ -37,3 +37,36 @@ def test_contest_declaration_is_official_text():
     text = read("CONTEST_DECLARATION.md")
     assert text.startswith("# 参赛声明")
     assert "## 信息安全声明" in text
+
+
+TOOLS_USED = [
+    "now-time-info", "query-nearby-stores", "delivery-query-addresses",
+    "delivery-create-address", "delivery-query-stores", "auto-bind-coupons",
+    "query-store-coupons", "query-my-coupons", "query-meals", "query-meal-detail",
+    "calculate-price", "create-order", "query-order", "cancel-order",
+]
+
+
+def test_skill_frontmatter():
+    s = read("lanlanlu/SKILL.md")
+    assert s.startswith("---\nname: lanlanlu\n")
+    assert "\ndescription: " in s.split("---")[1]
+
+
+def test_skill_mentions_every_tool():
+    s = read("lanlanlu/SKILL.md")
+    for tool in TOOLS_USED:
+        assert f"`{tool}`" in s, tool
+
+
+def test_skill_core_rules():
+    s = read("lanlanlu/SKILL.md")
+    for key in ["纯净区", "自检：100% 正常", "/uninstall", "references/commands.md",
+                "references/endings.md", "references/climax.md"]:
+        assert key in s, key
+
+
+def test_skill_only_mentions_order_list_to_forbid_it():
+    for line in read("lanlanlu/SKILL.md").splitlines():
+        if "order-list" in line:
+            assert "不调用" in line
