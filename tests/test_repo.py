@@ -70,3 +70,24 @@ def test_skill_only_mentions_order_list_to_forbid_it():
     for line in read("lanlanlu/SKILL.md").splitlines():
         if "order-list" in line:
             assert "不调用" in line
+
+
+def test_commands_cover_spec_table():
+    s = read("lanlanlu/references/commands.md")
+    for cmd in ["`ps`", "`top`", "`kill -9 lanlanlu.exe`", "`sudo 正常`", "`ping lanlanlu`",
+                "`git blame`", "`--version`", "`help`", "`↑↑↓↓←→←→BA`", "`上上下下左右左右BA`",
+                "`/uninstall`", "`/lanlanlu`"]:
+        assert cmd in s, cmd
+
+
+def test_endings_scripts():
+    s = read("lanlanlu/references/endings.md")
+    for key in ["结局 1/5 已解锁：《假性修复》", "结局 3/5 已解锁：《反向污染》",
+                "[WARN] 报告审核人数：2", "检测到用户已被污染", "references/climax.md"]:
+        assert key in s, key
+
+
+def test_climax_points_to_frames_and_player():
+    s = read("lanlanlu/references/climax.md")
+    assert "references/climax-frames.md" in s
+    assert "python player/play.py" in s
